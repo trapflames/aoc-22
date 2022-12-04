@@ -1,36 +1,32 @@
 const input = await Deno.readTextFile('./input.txt')
 
-const rucksacks = input.split('\r\n')
+const rucksacks = input
+  .split('\r\n')
+  //Divide each line by 2
+  .map((val) => [val.slice(0, val.length / 2), val.slice(val.length / 2)])
 
-function findCommonLetters(arr: string[]) {
-  const [pt1, pt2] = arr
+// console.log(rucksacks)
+
+const findCommonLetter = (arr: string[]): string => {
   let result = ''
-  const map: string[] = []
+  const [leftSide, rightSide] = arr
 
-  for (const i of pt1) {
-    if (!map.includes(i) && pt2.includes(i)) {
-      result += '' + i
-      map.push(i)
+  for (const i of leftSide) {
+    if (rightSide.includes(i)) {
+      result = i
     }
   }
-  //   console.log(pt1, pt2, result, map)
-
   return result
 }
 
-const alphaVal = (s: string) =>
+// Convert letter to priority level
+const convertLetterToPriorityLevel = (s: string): number =>
   s === s.toLowerCase() ? s.charCodeAt(0) - 97 + 1 : s.charCodeAt(0) - 65 + 27
-
-const dividedRucksacks = rucksacks.map((val) => [
-  val.slice(0, val.length / 2),
-  val.slice(val.length / 2),
-])
-
-console.log(dividedRucksacks)
 
 let response = 0
 
-for (const i in dividedRucksacks) {
-  response += alphaVal(findCommonLetters(dividedRucksacks[i]))
+for (const i in rucksacks) {
+  response += convertLetterToPriorityLevel(findCommonLetter(rucksacks[i]))
 }
-console.log(response)
+console.log(`Part One: ${response} points.`)
+console.log(`Test: ${response === 8401}`)
